@@ -234,7 +234,7 @@ public:
     };
     virtual void PinSetMode(MicroFlo::PinId pin, PinMode mode) = 0;
     virtual void PinSetPullup(MicroFlo::PinId pin, PullupMode mode) = 0;
-
+	virtual void SPISetMode() = 0;
     // Digital
     virtual void DigitalWrite(MicroFlo::PinId pin, bool val) = 0;
     virtual bool DigitalRead(MicroFlo::PinId pin) = 0;

@@ -358,7 +358,7 @@
             "inPorts": {}
         },
 
-        "TivaC": { "id": 54,
+       "TivaC": { "id": 54,
             "description": "Convenient definition of pins available for GPIO Texas Instruments Tiva-C",
             "outPorts": {
                 "pa0": { "id": 0 },
@@ -418,6 +418,13 @@
             "inPorts": {}
         },
 
+		"SPIWrite": { "id": 55,
+			"description": "Writes 9 bytes to the SSI0",
+			"inPorts": {
+				"in": { "id": 0 }
+			},
+			"outPorts": {}
+		},
 
         "SubGraph": { "id": 100,
             "description": "Not for normal use. Used internally for handling subgraphs",

@@ -32,6 +32,15 @@
 #include <mbed.h>
 #endif
 
+#include "inc/hw_memmap.h" 
+#include "inc/hw_ssi.h" 
+#include "inc/hw_types.h" 
+#include "driverlib/ssi.h" 
+#include "driverlib/gpio.h" 
+#include "driverlib/pin_map.h" 
+#include "driverlib/sysctl.h" 
+
+
 namespace Components {
 
 
@@ -114,6 +123,43 @@ public:
             io->SerialWrite(serialDevice, in.asAscii());
         }
     }
+};
+
+class SPIWrite : public SingleOutputComponent {
+public:
+	virtual void process(Packet in, MicroFlo::PortId port) {
+	    if (in.isSetup()) {
+	    	io->SPISetMode();
+	    }
+	    else {
+	    	/* write byte to transmit registor
+	    	-> idle thill the byte was transmitted
+ 	    	(check from status register)
+ 	    	3 bites/led
+ 	    	send data by writing it to the transmit register
+	    	and do this untill you have transmitted a frame buffer for all led's
+	    	and then you wait a millisecond
+	    	to letch the data
+	    	and then led's will behave like instructed by the code they recieved
+ 	    	then data in the portals will be outputted/displayed
+	     	*/
+		
+            #define NUM_SSI_DATA 9 
+            const uint8_t pui8DataTx[NUM_SSI_DATA] = {0x88, 0xF8, 0xF8, 0x88, 0x01, 0x1F, 0x1F, 0x01, 0xFF};
+            uint32_t ui32Data; 
+            uint32_t ui32Index; 
+
+            for(ui32Index = 0; ui32Index < NUM_SSI_DATA; ui32Index++) 
+            { 
+                ui32Data = ((pui8DataTx[ui32Index]) << 8) + (1 << ui32Index); 
+                SSIDataPut(SSI0_BASE, ui32Data); 
+                while(SSIBusy(SSI0_BASE)) {
+                    // busy wait
+                }
+            } 
+
+	    }
+	}
 };
 
 class DigitalWrite : public SingleOutputComponent {

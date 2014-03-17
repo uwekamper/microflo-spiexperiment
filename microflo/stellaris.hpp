@@ -129,6 +129,20 @@ public:
         }
     }
 
+	virtual void SPISetMode() {
+		// set the SPI modes needed to drive the portal lights on Pins PA2 and PA5.
+		// TODO; Allow other Pins to be used
+		MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+        MAP_GPIOPinConfigure(GPIO_PA5_SSI0TX);
+        MAP_GPIOPinConfigure(GPIO_PA2_SSI0CLK);
+        MAP_GPIOPinTypeSSI(GPIO_PORTA_BASE, GPIO_PIN_5 | GPIO_PIN_2);
+
+		/* Configure SSI0 for the ws2801's SPI-like protocol */
+        MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_SSI0);
+		/*check that tiva is using the same ssi device a stellaris is*/
+        MAP_SSIConfigSetExpClk(SSI0_BASE, MAP_SysCtlClockGet(), SSI_FRF_MOTO_MODE_0, SSI_MODE_MASTER, 2000000, 8);
+	}
+
     // Digital
     virtual void DigitalWrite(MicroFlo::PinId pin, bool val) {;
         GPIOPinWrite(portBase(pin), pinMask(pin), val ? pinMask(pin) : 0x00);
